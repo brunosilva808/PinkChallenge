@@ -11,6 +11,8 @@
 		7E2DA5A11E9537E1009723CF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2DA5A01E9537E1009723CF /* ViewController.swift */; };
 		7E2DA5A61E9537E1009723CF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7E2DA5A51E9537E1009723CF /* Assets.xcassets */; };
 		7E2DA5A91E9537E1009723CF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7E2DA5A71E9537E1009723CF /* LaunchScreen.storyboard */; };
+		7E2DA5B11E954240009723CF /* SwipeCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2DA5B01E954240009723CF /* SwipeCard.swift */; };
+		7E2DA5B31E954D69009723CF /* SwipeCardsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E2DA5B21E954D69009723CF /* SwipeCardsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -20,6 +22,8 @@
 		7E2DA5A51E9537E1009723CF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7E2DA5A81E9537E1009723CF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7E2DA5AA1E9537E1009723CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7E2DA5B01E954240009723CF /* SwipeCard.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwipeCard.swift; sourceTree = "<group>"; };
+		7E2DA5B21E954D69009723CF /* SwipeCardsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwipeCardsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +61,8 @@
 				7E2DA5A51E9537E1009723CF /* Assets.xcassets */,
 				7E2DA5A71E9537E1009723CF /* LaunchScreen.storyboard */,
 				7E2DA5AA1E9537E1009723CF /* Info.plist */,
+				7E2DA5B01E954240009723CF /* SwipeCard.swift */,
+				7E2DA5B21E954D69009723CF /* SwipeCardsView.swift */,
 			);
 			path = PinkChallenge;
 			sourceTree = "<group>";
@@ -133,7 +139,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				7E2DA5A11E9537E1009723CF /* ViewController.swift in Sources */,
+				7E2DA5B11E954240009723CF /* SwipeCard.swift in Sources */,
 				7E2DA59F1E9537E1009723CF /* AppDelegate.swift in Sources */,
+				7E2DA5B31E954D69009723CF /* SwipeCardsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
