@@ -8,6 +8,11 @@
 
 import UIKit
 
+public enum emojiSide {
+    case left
+    case right
+}
+
 class EmojiLauncher: NSObject {
     
     let rightViewContainer: UIView = {
@@ -97,30 +102,11 @@ class EmojiLauncher: NSObject {
 
             self.rightViewContainer.addConstraintsWithFormat(format: "V:|[v0(" + "\((emojiHeight))" + ")]-[v1(" + "\((emojiHeight))" + ")]-[v2(" + "\((emojiHeight))" + ")]", views: emojiHappy1Image, emojiHappy2Image, emojiHappy3Image)
             
-            debugPrint(( height / 3 ) - 20)
-            debugPrint(yDistance)
-            
-            let topEmoji = -( height / 3 ) + 20
-            let middleEmoji = -( height / 3 ) + 20
-            let bottomEmoji = ( height / 3 ) - 20
-            
-            if topEmoji > yDistance  {
-                emojiHappy1Image.alpha = 1
-                emojiHappy2Image.alpha = 0.5
-                emojiHappy3Image.alpha = 0.5
-            } else if bottomEmoji > yDistance {
-                emojiHappy1Image.alpha = 0.5
-                emojiHappy2Image.alpha = 1
-                emojiHappy3Image.alpha = 0.5
-            } else if yDistance > bottomEmoji {
-                emojiHappy1Image.alpha = 0.5
-                emojiHappy2Image.alpha = 0.5
-                emojiHappy3Image.alpha = 1
-            }
+            showEmoji(height: emojiHeight, yDistance: yDistance, side: .right)
         }
     }
     
-    func showLeftEmojiView() {
+    func showLeftEmojiView(yDistance: CGFloat) {
         debugPrint("showLeftEmojiView")
         if let window = UIApplication.shared.keyWindow {
             let height = CGFloat(300)
@@ -147,11 +133,50 @@ class EmojiLauncher: NSObject {
             let emojiHeight = height / 3
             
             self.leftViewContainer.addConstraintsWithFormat(format: "V:|[v0(" + "\((emojiHeight))" + ")]-[v1(" + "\((emojiHeight))" + ")]-[v2(" + "\((emojiHeight))" + ")]", views: emojiSad1Image, emojiSad2Image, emojiSad3Image)
+            
+            debugPrint("Y: " + "\(yDistance)")
+            showEmoji(height: emojiHeight, yDistance: yDistance,side: .left)
+        }
+    }
+    
+    func showEmoji(height: CGFloat, yDistance: CGFloat, side: emojiSide) {
+        
+        emojiSad1Image.alpha = 0.5
+        emojiSad2Image.alpha = 0.5
+        emojiSad3Image.alpha = 0.5
+        
+        emojiHappy1Image.alpha = 0.5
+        emojiHappy2Image.alpha = 0.5
+        emojiHappy3Image.alpha = 0.5
+
+        let topEmoji = -( height / 3 ) + 20
+        let bottomEmoji = ( height / 3 ) - 20
+        
+        if topEmoji > yDistance  {
+            switch side {
+            case .left:
+                emojiSad1Image.alpha = 1
+            case .right:
+                emojiHappy1Image.alpha = 1
+            }
+        } else if bottomEmoji > yDistance {
+            switch side {
+            case .left:
+                emojiSad2Image.alpha = 1
+            case .right:
+                emojiHappy2Image.alpha = 1
+            }
+        } else if yDistance > bottomEmoji {
+            switch side {
+            case .left:
+                emojiSad3Image.alpha = 1
+            case .right:
+                emojiHappy3Image.alpha = 1
+            }
         }
     }
     
     func dismissEmojiViews() {
-        debugPrint("dismissEmojiViews")
         UIView.animate(withDuration: 0.3, animations: {
             self.rightViewContainer.alpha = 0
             self.leftViewContainer.alpha = 0

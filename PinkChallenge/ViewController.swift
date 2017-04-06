@@ -100,7 +100,7 @@ class ViewController: UIViewController, SwipeCardsViewDelegate {
         if xDistance > actionMargin {
             emojiLauncher.showRightEmojiView(yDistance: yDistance)
         } else if xDistance < -actionMargin {
-            emojiLauncher.showLeftEmojiView()
+            emojiLauncher.showLeftEmojiView(yDistance: yDistance)
         } else {
             emojiLauncher.dismissEmojiViews()
         }
