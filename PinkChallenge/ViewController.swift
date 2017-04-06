@@ -49,10 +49,32 @@ class ViewController: UIViewController, SwipeCardsViewDelegate {
             label.frame.size = CGSize(width: 100, height: 100)
             label.center = CGPoint(x: frame.width / 2, y: frame.height / 2)
             label.layer.cornerRadius = label.frame.width / 2
-            label.backgroundColor = mode == .left ? UIColor.red : UIColor.green
             label.clipsToBounds = true
-            label.text = mode == .left ? "👎" : "👍"
-            label.font = UIFont.systemFont(ofSize: 24)
+//            label.backgroundColor = mode == .left ? UIColor.red : UIColor.green
+//            label.text = mode == .left ? "👎" : "👍"
+            
+            switch mode {
+            case .left:
+                label.text = "👎"
+                label.backgroundColor = UIColor.red
+            case .right:
+                label.text = "👍"
+                label.backgroundColor = UIColor.green
+            case .rightTop:
+                label.text = "Right Top"
+                label.backgroundColor = UIColor.green
+            case .rightBottom:
+                label.text = "Right Bottom"
+                label.backgroundColor = UIColor.green
+            case .leftTop:
+                label.text = "Left Top"
+                label.backgroundColor = UIColor.red
+            case .leftBottom:
+                label.text = "Left Bottom"
+                label.backgroundColor = UIColor.red
+            }
+            
+            label.font = UIFont.systemFont(ofSize: 14)
             label.textAlignment = .center
             return label
         }
@@ -64,7 +86,7 @@ class ViewController: UIViewController, SwipeCardsViewDelegate {
         swipeView.delegate = self
         self.view.addSubview(swipeView)
         
-        self.swipeView.addCards((self.count...(self.count+19)).map({"\($0)"}), onTop: true)
+        self.swipeView.addCards((self.count...(self.count+19)).map({"\($0)"}))
         self.count = self.count + 20
     }
 
@@ -110,36 +132,3 @@ class ViewController: UIViewController, SwipeCardsViewDelegate {
     }
 
 }
-
-//extension ViewController: SwipeCardsViewDelegate {
-//    func swipedLeft(_ object: Any) {
-//        print("Swiped left: \(object)")
-//    }
-//    
-//    func swipedRight(_ object: Any) {
-//        print("Swiped right: \(object)")
-//    }
-//    
-//    func cardTapped(_ object: Any) {
-//        print("Tapped on: \(object)")
-//    }
-//    
-//    func reachedEndOfStack() {
-//        print("Reached end of stack")
-//    }
-//
-//    func cardDragged(_ object: CGFloat) {
-//        let emojiLauncher = EmojiLauncher()
-//        emojiLauncher.showEmojiView()
-//        
-//        if object > actionMargin {
-//            debugPrint("Right")
-//        } else if object < -actionMargin {
-//            debugPrint("Left")
-//        } else {
-//            emojiLauncher.dismissEmojiView()
-//        }
-//        
-//        print("Card Dragged distance: \(object)")
-//    }
-//}

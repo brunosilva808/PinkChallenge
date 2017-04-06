@@ -24,7 +24,11 @@ class SwipeCard: UIView {
     var obj: Any!
     var leftOverlay: UIView?
     var rightOverlay: UIView?
-
+    var rightTopOverlay: UIView?
+    var rightBottomOverlay: UIView?
+    var leftTopOverlay: UIView?
+    var leftBottomOverlay: UIView?
+    
     private let rotationStrength: CGFloat = 320.0
     private let rotationAngle: CGFloat = CGFloat(Double.pi) / CGFloat(8.0)
     private let rotationMax: CGFloat = 1
@@ -54,6 +58,10 @@ class SwipeCard: UIView {
     func configureOverlays() {
         self.configureOverlay(overlay: self.leftOverlay)
         self.configureOverlay(overlay: self.rightOverlay)
+        self.configureOverlay(overlay: self.rightTopOverlay)
+        self.configureOverlay(overlay: self.rightBottomOverlay)
+        self.configureOverlay(overlay: self.leftTopOverlay)
+        self.configureOverlay(overlay: self.leftBottomOverlay)
     }
     
     private func configureOverlay(overlay: UIView?) {
@@ -81,7 +89,7 @@ class SwipeCard: UIView {
             let transform = CGAffineTransform(rotationAngle: rAngle)
             let scaleTransform = transform.scaledBy(x: scale, y: scale)
             self.transform = scaleTransform
-            self.updateOverlay(xFromCenter)
+            self.updateOverlay(xFromCenter, yFromCenter)
             break
         case .ended:
             self.afterSwipeAction()
@@ -106,22 +114,40 @@ class SwipeCard: UIView {
                 self.transform = CGAffineTransform.identity
                 self.leftOverlay?.alpha = 0.0
                 self.rightOverlay?.alpha = 0.0
+                self.rightTopOverlay?.alpha = 0.0
+                self.rightBottomOverlay?.alpha = 0.0
+                self.leftTopOverlay?.alpha = 0.0
+                self.leftBottomOverlay?.alpha = 0.0
             }
         }
     }
     
-    private func updateOverlay(_ distance: CGFloat) {
+    private func updateOverlay(_ xDistance: CGFloat, _ yDistance: CGFloat) {
+        
+        debugPrint(yDistance)
+        self.leftOverlay?.alpha = 0.0
+        self.rightOverlay?.alpha = 0.0
+        self.rightTopOverlay?.alpha = 0.0
+        self.rightBottomOverlay?.alpha = 0.0
+        self.leftTopOverlay?.alpha = 0.0
+        self.leftBottomOverlay?.alpha = 0.0
         
         var activeOverlay: UIView?
-        if (distance > 0) {
-            self.leftOverlay?.alpha = 0.0
+        if xDistance > 0 && yDistance < -80 {
+            activeOverlay = self.rightTopOverlay
+        } else if (xDistance > 0 && yDistance > 80) {
+            activeOverlay = self.rightBottomOverlay
+        } else if (xDistance > 0) {
             activeOverlay = self.rightOverlay
+        } else if xDistance < 0 && yDistance < -80 {
+            activeOverlay = self.leftTopOverlay
+        } else if xDistance < 0 && yDistance > 80 {
+            activeOverlay = self.leftBottomOverlay
         } else {
-            self.rightOverlay?.alpha = 0.0
             activeOverlay = self.leftOverlay
         }
         
-        activeOverlay?.alpha = min(fabs(distance)/100, 1.0)
+        activeOverlay?.alpha = min(fabs(xDistance)/100, 1.0)
     }
     
     private func rightAction() {

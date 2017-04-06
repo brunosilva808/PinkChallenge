@@ -12,6 +12,10 @@ import UIKit
 public enum SwipeMode {
     case left
     case right
+    case rightTop
+    case rightBottom
+    case leftTop
+    case leftBottom
 }
 
 public protocol SwipeCardsViewDelegate: class {
@@ -51,24 +55,20 @@ public class SwipeCardsView<Element>: UIView {
         fatalError("Please use init(frame:,viewGenerator)")
     }
     
-    public func addCards(_ elements: [Element], onTop: Bool = false) {
+    public func addCards(_ elements: [Element]) {
         guard elements.isEmpty == false else {
             return
         }
         
         self.isUserInteractionEnabled = true
-        
-        if onTop {
-            for element in elements.reversed() {
-                allCards.insert(element, at: 0)
-            }
-        } else {
+
+
             for element in elements {
                 allCards.append(element)
             }
-        }
         
-        if onTop && loadedCards.count > 0 {
+        
+        if loadedCards.count > 0 {
             for cardView in loadedCards {
                 cardView.removeFromSuperview()
             }
@@ -143,7 +143,11 @@ extension SwipeCardsView {
         let sv = self.viewGenerator(element, cardView.bounds)
         cardView.addSubview(sv)
         cardView.leftOverlay = self.overlayGenerator?(.left, cardView.bounds)
+        cardView.leftTopOverlay = self.overlayGenerator?(.leftTop, cardView.bounds)
+        cardView.leftBottomOverlay = self.overlayGenerator?(.leftBottom, cardView.bounds)
         cardView.rightOverlay = self.overlayGenerator?(.right, cardView.bounds)
+        cardView.rightTopOverlay = self.overlayGenerator?(.rightTop, cardView.bounds)
+        cardView.rightBottomOverlay = self.overlayGenerator?(.rightBottom, cardView.bounds)
         cardView.configureOverlays()
         return cardView
     }
