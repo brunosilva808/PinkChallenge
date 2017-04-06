@@ -15,6 +15,8 @@ public enum emojiSide {
 
 class EmojiLauncher: NSObject {
     
+    // MARK: - UI Components
+    
     let rightViewContainer: UIView = {
         let view = UIView()
         return view
@@ -76,67 +78,104 @@ class EmojiLauncher: NSObject {
         return imageView
     }()
     
-    func showRightEmojiView(yDistance: CGFloat) {
-        debugPrint("showRightEmojiView")
+    // MARK: - Var
+    
+//    private var originalLeftPoint = CGPoint.zero
+    private var originalLeftPoint: CGFloat = 0.0
+    private var originalRightPoint: CGFloat = 0.0
+    private var containerWidth: CGFloat = 0.0
+    private let height = CGFloat(300)
+    private var leftContainerIsVisible = false
+    private var righContainerIsVisible = false
+    
+    override init() {
+        super.init()
+        
         if let window = UIApplication.shared.keyWindow {
-            let height = CGFloat(300)
-            let width = ( window.frame.width / 2 ) - 60
+            self.containerWidth = ( window.frame.width / 2 ) - 60
+            self.originalLeftPoint = containerWidth
+            self.originalRightPoint = window.frame.width + containerWidth
             
-            window.addSubview(self.rightViewContainer)
-            
-            self.rightViewContainer.frame = CGRect(x: window.frame.width - width,
-                                              y: ( window.frame.height / 2 ) - ( height / 2 ),
-                                              width: ( window.frame.width / 2 ) - 60,
-                                              height: height)
-            self.rightViewContainer.alpha = 1
-            
-            self.rightViewContainer.addSubview(emojiHappy1Image)
-            self.rightViewContainer.addSubview(emojiHappy2Image)
-            self.rightViewContainer.addSubview(emojiHappy3Image)
-            
-            self.rightViewContainer.addConstraintsWithFormat(format: "H:|[v0]|", views: emojiHappy1Image)
-            self.rightViewContainer.addConstraintsWithFormat(format: "H:|[v0]|", views: emojiHappy2Image)
-            self.rightViewContainer.addConstraintsWithFormat(format: "H:|[v0]|", views: emojiHappy3Image)
-            
-            let emojiHeight = height / 3
-
-            self.rightViewContainer.addConstraintsWithFormat(format: "V:|[v0(" + "\((emojiHeight))" + ")]-[v1(" + "\((emojiHeight))" + ")]-[v2(" + "\((emojiHeight))" + ")]", views: emojiHappy1Image, emojiHappy2Image, emojiHappy3Image)
-            
-            showEmoji(height: emojiHeight, yDistance: yDistance, side: .right)
+            // Called to make views go To default positions
+            dismissEmojiViews()
         }
     }
     
-    func showLeftEmojiView(yDistance: CGFloat) {
-        debugPrint("showLeftEmojiView")
-        if let window = UIApplication.shared.keyWindow {
-            let height = CGFloat(300)
-            window.addSubview(self.leftViewContainer)
+    // Happy Emojis
+    func showRightEmojiView(yDistance: CGFloat) {
+        let emojiHeight = height / 3
+        
+        if self.righContainerIsVisible == false {
+            self.righContainerIsVisible = true
             
-            self.leftViewContainer.frame = CGRect(x: 0,
-                                              y: ( window.frame.height / 2 ) - ( height / 2 ),
-                                              width: ( window.frame.width / 2 ) - 60,
-                                              height: height)
-//            self.leftViewContainer.alpha = 0
-//            
-//            UIView.animate(withDuration: 0.3, animations: {
-                self.leftViewContainer.alpha = 1
-//            })
-            
-            self.leftViewContainer.addSubview(emojiSad1Image)
-            self.leftViewContainer.addSubview(emojiSad2Image)
-            self.leftViewContainer.addSubview(emojiSad3Image)
-            
-            self.leftViewContainer.addConstraintsWithFormat(format: "H:|[v0]|", views: emojiSad1Image)
-            self.leftViewContainer.addConstraintsWithFormat(format: "H:|[v0]|", views: emojiSad2Image)
-            self.leftViewContainer.addConstraintsWithFormat(format: "H:|[v0]|", views: emojiSad3Image)
-            
-            let emojiHeight = height / 3
-            
-            self.leftViewContainer.addConstraintsWithFormat(format: "V:|[v0(" + "\((emojiHeight))" + ")]-[v1(" + "\((emojiHeight))" + ")]-[v2(" + "\((emojiHeight))" + ")]", views: emojiSad1Image, emojiSad2Image, emojiSad3Image)
-            
-            debugPrint("Y: " + "\(yDistance)")
-            showEmoji(height: emojiHeight, yDistance: yDistance,side: .left)
+            if let window = UIApplication.shared.keyWindow {
+                let height = CGFloat(300)
+                
+                window.addSubview(self.rightViewContainer)
+
+                UIView.animate(withDuration: 0.3, animations: { 
+                    self.rightViewContainer.frame = CGRect(x: window.frame.width - self.containerWidth,
+                                                           y: ( window.frame.height / 2 ) - ( height / 2 ),
+                                                           width: self.containerWidth,
+                                                           height: height)
+                })
+
+                self.rightViewContainer.alpha = 1
+                
+                self.rightViewContainer.addSubview(emojiHappy1Image)
+                self.rightViewContainer.addSubview(emojiHappy2Image)
+                self.rightViewContainer.addSubview(emojiHappy3Image)
+                
+                self.rightViewContainer.addConstraintsWithFormat(format: "H:|[v0]|", views: emojiHappy1Image)
+                self.rightViewContainer.addConstraintsWithFormat(format: "H:|[v0]|", views: emojiHappy2Image)
+                self.rightViewContainer.addConstraintsWithFormat(format: "H:|[v0]|", views: emojiHappy3Image)
+
+                self.rightViewContainer.addConstraintsWithFormat(format: "V:|[v0(" + "\((emojiHeight))" + ")]-[v1(" + "\((emojiHeight))" + ")]-[v2(" + "\((emojiHeight))" + ")]", views: emojiHappy1Image, emojiHappy2Image, emojiHappy3Image)
+            }
         }
+        
+        showEmoji(height: emojiHeight, yDistance: yDistance, side: .right)
+    }
+    
+    // Sad Emojis
+    func showLeftEmojiView(yDistance: CGFloat) {
+        let emojiHeight = self.height / 3
+        
+        if self.leftContainerIsVisible == false {
+            self.leftContainerIsVisible = true
+        
+            if let window = UIApplication.shared.keyWindow {
+                window.addSubview(self.leftViewContainer)
+
+                
+//                self.leftViewContainer.frame = CGRect(x: -self.containerWidth,
+//                                                      y: ( window.frame.height / 2 ) - ( self.height / 2 ),
+//                                                      width: self.containerWidth,
+//                                                      height: self.height)
+                
+                UIView.animate(withDuration: 0.3, animations: { 
+                    self.leftViewContainer.frame = CGRect(x: 0,
+                                                          y: ( window.frame.height / 2 ) - ( self.height / 2 ),
+                                                          width: self.containerWidth,
+                                                          height: self.height)
+                })
+
+                self.leftViewContainer.alpha = 1
+                
+                self.leftViewContainer.addSubview(emojiSad1Image)
+                self.leftViewContainer.addSubview(emojiSad2Image)
+                self.leftViewContainer.addSubview(emojiSad3Image)
+                
+                self.leftViewContainer.addConstraintsWithFormat(format: "H:|[v0]|", views: emojiSad1Image)
+                self.leftViewContainer.addConstraintsWithFormat(format: "H:|[v0]|", views: emojiSad2Image)
+                self.leftViewContainer.addConstraintsWithFormat(format: "H:|[v0]|", views: emojiSad3Image)
+                
+                self.leftViewContainer.addConstraintsWithFormat(format: "V:|[v0(" + "\((emojiHeight))" + ")]-[v1(" + "\((emojiHeight))" + ")]-[v2(" + "\((emojiHeight))" + ")]", views: emojiSad1Image, emojiSad2Image, emojiSad3Image)
+            }
+            
+        }
+        
+        showEmoji(height: emojiHeight, yDistance: yDistance,side: .left)
     }
     
     func showEmoji(height: CGFloat, yDistance: CGFloat, side: emojiSide) {
@@ -177,13 +216,36 @@ class EmojiLauncher: NSObject {
     }
     
     func dismissEmojiViews() {
-        UIView.animate(withDuration: 0.3, animations: {
-            self.rightViewContainer.alpha = 0
-            self.leftViewContainer.alpha = 0
-        })
+        self.leftContainerIsVisible = false
+        self.righContainerIsVisible = false
+        
+        if let window = UIApplication.shared.keyWindow {
+            UIView.animate(withDuration: 0.3, animations: {
+                self.leftViewContainer.frame = CGRect(x: -self.containerWidth,
+                                                      y: ( window.frame.height / 2 ) - ( self.height / 2 ),
+                                                      width: self.containerWidth,
+                                                      height: self.height)
+                self.rightViewContainer.frame = CGRect(x: window.frame.width + self.containerWidth,
+                                                       y: ( window.frame.height / 2 ) - ( self.height / 2 ),
+                                                       width: self.containerWidth,
+                                                       height: self.height)
+                self.rightViewContainer.alpha = 0
+                self.leftViewContainer.alpha = 0
+            })
+        }
     }
     
-    override init() {
-        super.init()
-    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
