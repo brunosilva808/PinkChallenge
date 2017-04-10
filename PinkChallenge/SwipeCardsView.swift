@@ -18,11 +18,18 @@ public enum SwipeMode {
     case leftBottom
 }
 
+public enum BarButtonColor {
+    case red
+    case black
+}
+
 public protocol SwipeCardsViewDelegate: class {
     func swipedLeft(_ object: Any)
     func swipedRight(_ object: Any)
     func cardTapped(_ object: Any)
     func cardDragged(_ object1: CGFloat,_ object2: CGFloat)
+    func animateUIBarButton(_ object1: CGFloat,_ object2: CGFloat)
+    func changeUIBarButtonColor(color: BarButtonColor)
     func reachedEndOfStack()
 }
 
@@ -113,6 +120,14 @@ extension SwipeCardsView: SwipeCardDelegate {
     
     func cardDragged(_ xDistance: CGFloat, _ yDistance: CGFloat) {
         self.delegate?.cardDragged(xDistance, yDistance)
+    }
+    
+    func animateUIBarButton(_ xDistance: CGFloat,_ yDistance: CGFloat) {
+        self.delegate?.animateUIBarButton(xDistance,yDistance)
+    }
+    
+    func changeUIBarButtonColor(color: BarButtonColor) {
+        self.delegate?.changeUIBarButtonColor(color: color)
     }
 }
 

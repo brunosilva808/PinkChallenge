@@ -7,29 +7,48 @@
 //
 
 import UIKit
+import Foundation
 
 class ViewController: UIViewController, SwipeCardsViewDelegate {
-
     // MARK: - Var
     
     private var swipeView: SwipeCardsView<String>!
     private var count = 0
-    let emojiLauncher = EmojiLauncher()
+    var emojiLauncher = EmojiLauncher()
+    
+    var heartBarButtonItem = UIBarButtonItem()
     
     // MARK: - Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         self.view.backgroundColor = UIColor(white: 0.95, alpha: 1.0)
         
+        setupNavBarUI()
+        setupNavBarTitle()
+        setupNavBarButtons()
+        
+        let viewGenerator = setupCard()
+        let overlayGenerator = setupOverlay()
+
+        setupSwipeView(viewGenerator: viewGenerator, overlayGenerator: overlayGenerator)
+    }
+
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+    
+    //MARK: - Setup
+    
+    func setupCard() -> (String, CGRect) -> (UIView) {
         let viewGenerator: (String, CGRect) -> (UIView) = { (element: String, frame: CGRect) -> (UIView) in
             let container = UIView(frame: CGRect(x: 30, y: 20, width: frame.width - 60, height: frame.height - 60))
             let label = UILabel(frame: container.bounds)
-            label.text = element
-            label.textAlignment = .center
+            //label.text = element
+            //            label.textAlignment = .center
             label.backgroundColor = UIColor.white
-            label.font = UIFont.systemFont(ofSize: 48, weight: UIFontWeightThin)
+            //            label.font = UIFont.systemFont(ofSize: 48, weight: UIFontWeightThin)
             label.clipsToBounds = true
             label.layer.cornerRadius = 16
             container.addSubview(label)
@@ -43,15 +62,19 @@ class ViewController: UIViewController, SwipeCardsViewDelegate {
             
             return container
         }
+        
+        return viewGenerator
+    }
     
+    func setupOverlay() -> (SwipeMode, CGRect) -> (UIView) {
         let overlayGenerator: (SwipeMode, CGRect) -> (UIView) = { (mode: SwipeMode, frame: CGRect) -> (UIView) in
             let label = UILabel()
             label.frame.size = CGSize(width: 100, height: 100)
             label.center = CGPoint(x: frame.width / 2, y: frame.height / 2)
             label.layer.cornerRadius = label.frame.width / 2
             label.clipsToBounds = true
-//            label.backgroundColor = mode == .left ? UIColor.red : UIColor.green
-//            label.text = mode == .left ? "👎" : "👍"
+            //            label.backgroundColor = mode == .left ? UIColor.red : UIColor.green
+            //            label.text = mode == .left ? "👎" : "👍"
             
             switch mode {
             case .left:
@@ -79,20 +102,92 @@ class ViewController: UIViewController, SwipeCardsViewDelegate {
             return label
         }
         
+        return overlayGenerator
+    }
+    
+    func setupSwipeView(viewGenerator: @escaping (String, CGRect) -> (UIView),
+                        overlayGenerator: @escaping (_ mode: SwipeMode, _ frame: CGRect) -> (UIView)) {
         let frame = CGRect(x: 0, y: 80, width: self.view.frame.width, height: self.view.frame.height - 160)
         swipeView = SwipeCardsView<String>(frame: frame,
-                                             viewGenerator: viewGenerator,
-                                             overlayGenerator: overlayGenerator)
+                                           viewGenerator: viewGenerator,
+                                           overlayGenerator: overlayGenerator)
         swipeView.delegate = self
         self.view.addSubview(swipeView)
         
         self.swipeView.addCards((self.count...(self.count+19)).map({"\($0)"}))
         self.count = self.count + 20
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    func setupNavBarUI() {
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        self.navigationController?.navigationBar.shadowImage = UIImage()
+        self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.view.backgroundColor = UIColor.clear
+    }
+    
+    func setupNavBarTitle() {
+        let label = UILabel(frame: CGRect(x:0, y:0, width:400, height:50))
+        label.numberOfLines = 2
+        label.font = UIFont.boldSystemFont(ofSize: 16.0)
+        label.textAlignment = .center
+        label.text = "How do you like \nthis one?"
+        self.navigationItem.titleView = label
+    }
+    
+    func setupNavBarButtons(){
+        let burguerMenuImage = #imageLiteral(resourceName: "burguerMenu").withRenderingMode(.alwaysOriginal)
+        let burguerMenuBarButtonItem = UIBarButtonItem(image: burguerMenuImage, style: .plain, target: self, action: nil)
+        
+        navigationItem.leftBarButtonItem = burguerMenuBarButtonItem
+        
+        let icon = #imageLiteral(resourceName: "heartMenu").withRenderingMode(.alwaysOriginal)
+        let iconSize = CGRect(origin: CGPoint.zero, size: icon.size)
+        let iconButton = UIButton(frame: iconSize)
+        iconButton.setBackgroundImage(icon, for: .normal)
+        
+        self.heartBarButtonItem.customView = iconButton
+        navigationItem.rightBarButtonItem = self.heartBarButtonItem
+        
+        self.heartBarButtonItem.customView!.transform = CGAffineTransform(scaleX: 0, y: 0)
+        
+        UIView.animate(withDuration: 1.0,
+                                   delay: 0.5,
+                                   usingSpringWithDamping: 0.5,
+                                   initialSpringVelocity: 10,
+                                   options: .curveLinear,
+                                   animations: {
+                                    self.heartBarButtonItem.customView!.transform = CGAffineTransform.identity
+        },
+                                   completion: nil
+        )
+        
+    }
+    
+    // MARK: IBAction
+    
+    func changeUIBarButtonColor(color: BarButtonColor) {
+        
+        var icon = UIImage()
+        
+        switch color {
+        case .red:
+            icon = #imageLiteral(resourceName: "heartRedMenu").withRenderingMode(.alwaysOriginal)
+        case .black:
+            icon = #imageLiteral(resourceName: "heartMenu").withRenderingMode(.alwaysOriginal)
+        }
+        
+        let iconSize = CGRect(origin: CGPoint.zero, size: icon.size)
+        let iconButton = UIButton(frame: iconSize)
+        iconButton.setBackgroundImage(icon, for: .normal)
+        
+        self.heartBarButtonItem.customView = iconButton
+    }
+    
+    func animateUIBarButton(_ object1: CGFloat, _ object2: CGFloat) {
+        self.heartBarButtonItem.customView!.transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi * 6/5))
+        UIView.animate(withDuration: 0.3) {
+            self.heartBarButtonItem.customView!.transform = CGAffineTransform.identity
+        }
     }
     
     //MARK: - SwipeCardsDelegate

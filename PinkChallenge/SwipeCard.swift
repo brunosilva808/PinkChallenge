@@ -14,6 +14,8 @@ protocol SwipeCardDelegate: class {
     func cardSwipedRight(_ card: SwipeCard)
     func cardTapped(_ card: SwipeCard)
     func cardDragged(_ xDistance: CGFloat,_ yDistance: CGFloat)
+    func animateUIBarButton(_ xDistance: CGFloat,_ yDistance: CGFloat)
+    func changeUIBarButtonColor(color: BarButtonColor)
 }
 
 public let actionMargin: CGFloat = 100.0
@@ -38,6 +40,7 @@ class SwipeCard: UIView {
     private var xFromCenter: CGFloat = 0.0
     private var yFromCenter: CGFloat = 0.0
     private var originalPoint = CGPoint.zero
+    private var containersMargin: CGFloat = 80
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -83,7 +86,7 @@ class SwipeCard: UIView {
             break
         case .changed:
             let rStrength = min(xFromCenter / self.rotationStrength, rotationMax)
-            let rAngle = self.rotationAngle * rStrength
+            let rAngle = -self.rotationAngle * rStrength
             let scale = min(1 - fabs(rStrength) / self.scaleStrength, self.scaleMax)
             self.center = CGPoint(x: self.originalPoint.x + xFromCenter, y: self.originalPoint.y + yFromCenter)
             let transform = CGAffineTransform(rotationAngle: rAngle)
@@ -133,18 +136,25 @@ class SwipeCard: UIView {
         self.leftBottomOverlay?.alpha = 0.0
         
         var activeOverlay: UIView?
-        if xDistance > 0 && yDistance < -80 {
+        if xDistance > 0 && yDistance < -self.containersMargin {
             activeOverlay = self.rightTopOverlay
-        } else if (xDistance > 0 && yDistance > 80) {
+            self.delegate?.changeUIBarButtonColor(color: .red)
+            debugPrint("Right Top")
+        } else if (xDistance > 0 && yDistance > self.containersMargin) {
             activeOverlay = self.rightBottomOverlay
+            debugPrint("Right Bottom")
         } else if (xDistance > 0) {
             activeOverlay = self.rightOverlay
-        } else if xDistance < 0 && yDistance < -80 {
+            debugPrint("Right")
+        } else if xDistance < 0 && yDistance < -self.containersMargin {
             activeOverlay = self.leftTopOverlay
-        } else if xDistance < 0 && yDistance > 80 {
+            debugPrint("Left Top")
+        } else if xDistance < 0 && yDistance > self.containersMargin {
             activeOverlay = self.leftBottomOverlay
+            debugPrint("Left Bottom")
         } else {
             activeOverlay = self.leftOverlay
+            debugPrint("Left")
         }
         
         activeOverlay?.alpha = min(fabs(xDistance)/100, 1.0)

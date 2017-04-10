@@ -188,10 +188,12 @@ class EmojiLauncher: NSObject {
         emojiHappy2Image.alpha = 0.5
         emojiHappy3Image.alpha = 0.5
 
-        let topEmoji = -( height / 3 ) + 20
+//        let topEmoji = -( height / 3 ) + 20
         let bottomEmoji = ( height / 3 ) - 20
         
-        if topEmoji > yDistance  {
+        debugPrint("Emoji:" + "\(yDistance)")
+        
+        if -actionMargin + 20 > yDistance  {
             switch side {
             case .left:
                 emojiSad1Image.alpha = 1
@@ -205,7 +207,7 @@ class EmojiLauncher: NSObject {
             case .right:
                 emojiHappy2Image.alpha = 1
             }
-        } else if yDistance > bottomEmoji {
+        } else if actionMargin + 20 > bottomEmoji {
             switch side {
             case .left:
                 emojiSad3Image.alpha = 1
