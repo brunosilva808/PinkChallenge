@@ -183,14 +183,32 @@ class ViewController: UIViewController, SwipeCardsViewDelegate {
         self.heartBarButtonItem.customView = iconButton
     }
     
-    func animateUIBarButton(_ object1: CGFloat, _ object2: CGFloat) {
+    func animateUIBarButton(completion: @escaping () -> ()) {
         self.heartBarButtonItem.customView!.transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi * 6/5))
-        UIView.animate(withDuration: 0.3) {
+        
+        UIView.animate(withDuration: 0.3, animations: { 
             self.heartBarButtonItem.customView!.transform = CGAffineTransform.identity
+        }) { (Bool) in
+            DispatchQueue.main.async {
+                completion()
+            }
         }
+        
     }
     
     //MARK: - SwipeCardsDelegate
+    
+    func animateUIBarButton(_ xDistance: CGFloat, _ yDistance: CGFloat) {
+        if -actionMargin + 20 > yDistance && xDistance > 0 {
+            animateUIBarButton { () in
+                
+//                self.heartBarButtonItem.customView?.frame = CGRect(origin: CGPoint.zero,
+//                                                                   size: CGSize(width: 88, height: 88))
+            }
+        }
+        
+        self.changeUIBarButtonColor(color: .black)
+    }
     
     func swipedLeft(_ object: Any) {
         print("Swiped left: \(object)")
@@ -209,6 +227,7 @@ class ViewController: UIViewController, SwipeCardsViewDelegate {
     
     func reachedEndOfStack() {
         print("Reached end of stack")
+        changeUIBarButtonColor(color: .black)
         emojiLauncher.dismissEmojiViews()
     }
     

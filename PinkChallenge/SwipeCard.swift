@@ -139,22 +139,16 @@ class SwipeCard: UIView {
         if xDistance > 0 && yDistance < -self.containersMargin {
             activeOverlay = self.rightTopOverlay
             self.delegate?.changeUIBarButtonColor(color: .red)
-            debugPrint("Right Top")
         } else if (xDistance > 0 && yDistance > self.containersMargin) {
             activeOverlay = self.rightBottomOverlay
-            debugPrint("Right Bottom")
         } else if (xDistance > 0) {
             activeOverlay = self.rightOverlay
-            debugPrint("Right")
         } else if xDistance < 0 && yDistance < -self.containersMargin {
             activeOverlay = self.leftTopOverlay
-            debugPrint("Left Top")
         } else if xDistance < 0 && yDistance > self.containersMargin {
             activeOverlay = self.leftBottomOverlay
-            debugPrint("Left Bottom")
         } else {
             activeOverlay = self.leftOverlay
-            debugPrint("Left")
         }
         
         activeOverlay?.alpha = min(fabs(xDistance)/100, 1.0)
@@ -168,6 +162,7 @@ class SwipeCard: UIView {
             self.removeFromSuperview()
         }
         self.delegate?.cardSwipedRight(self)
+        self.delegate?.animateUIBarButton(finishPoint.x, finishPoint.y)
     }
     
     private func leftAction() {

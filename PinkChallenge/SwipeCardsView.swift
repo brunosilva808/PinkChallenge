@@ -28,8 +28,8 @@ public protocol SwipeCardsViewDelegate: class {
     func swipedRight(_ object: Any)
     func cardTapped(_ object: Any)
     func cardDragged(_ object1: CGFloat,_ object2: CGFloat)
-    func animateUIBarButton(_ object1: CGFloat,_ object2: CGFloat)
     func changeUIBarButtonColor(color: BarButtonColor)
+    func animateUIBarButton(_ xDistance: CGFloat,_ yDistance: CGFloat)
     func reachedEndOfStack()
 }
 
@@ -98,6 +98,13 @@ public class SwipeCardsView<Element>: UIView {
 }
 
 extension SwipeCardsView: SwipeCardDelegate {
+    
+    func animateUIBarButton(_ xDistance: CGFloat,_ yDistance: CGFloat) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.001) { 
+            self.delegate?.animateUIBarButton(xDistance, yDistance)
+        }
+    }
+    
     func cardSwipedLeft(_ card: SwipeCard) {
         self.handleSwipedCard(card)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.001) {
@@ -120,10 +127,6 @@ extension SwipeCardsView: SwipeCardDelegate {
     
     func cardDragged(_ xDistance: CGFloat, _ yDistance: CGFloat) {
         self.delegate?.cardDragged(xDistance, yDistance)
-    }
-    
-    func animateUIBarButton(_ xDistance: CGFloat,_ yDistance: CGFloat) {
-        self.delegate?.animateUIBarButton(xDistance,yDistance)
     }
     
     func changeUIBarButtonColor(color: BarButtonColor) {
