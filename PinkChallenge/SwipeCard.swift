@@ -141,14 +141,19 @@ class SwipeCard: UIView {
             self.delegate?.changeUIBarButtonColor(color: .red)
         } else if (xDistance > 0 && yDistance > self.containersMargin) {
             activeOverlay = self.rightBottomOverlay
+            self.delegate?.changeUIBarButtonColor(color: .black)
         } else if (xDistance > 0) {
             activeOverlay = self.rightOverlay
+            self.delegate?.changeUIBarButtonColor(color: .black)
         } else if xDistance < 0 && yDistance < -self.containersMargin {
             activeOverlay = self.leftTopOverlay
+            self.delegate?.changeUIBarButtonColor(color: .black)
         } else if xDistance < 0 && yDistance > self.containersMargin {
             activeOverlay = self.leftBottomOverlay
+            self.delegate?.changeUIBarButtonColor(color: .black)
         } else {
             activeOverlay = self.leftOverlay
+            self.delegate?.changeUIBarButtonColor(color: .black)
         }
         
         activeOverlay?.alpha = min(fabs(xDistance)/100, 1.0)
