@@ -18,12 +18,49 @@ class ViewController: UIViewController, SwipeCardsViewDelegate {
     
     var heartBarButtonItem = UIBarButtonItem()
     
+    let reactLabel: UILabel = {
+        let label = UILabel()
+        label.text = "REACT"
+        label.textAlignment = .center
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    let happyImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.clipsToBounds = true
+        imageView.image = #imageLiteral(resourceName: "emojiHappy1")
+        return imageView
+    }()
+    
+    let sadImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.clipsToBounds = true
+        imageView.image = #imageLiteral(resourceName: "emojiSad1")
+        return imageView
+    }()
+    
+    let leftArrowImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.clipsToBounds = true
+        imageView.image = #imageLiteral(resourceName: "leftArrow")
+        return imageView
+    }()
+    
+    let rightArrowImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.clipsToBounds = true
+        imageView.image = #imageLiteral(resourceName: "rightArrow")
+        return imageView
+    }()
+    
     // MARK: - Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor(white: 0.95, alpha: 1.0)
         
+        setupUI()
         setupNavBarUI()
         setupNavBarTitle()
         setupNavBarButtons()
@@ -44,21 +81,39 @@ class ViewController: UIViewController, SwipeCardsViewDelegate {
     func setupCard() -> (String, CGRect) -> (UIView) {
         let viewGenerator: (String, CGRect) -> (UIView) = { (element: String, frame: CGRect) -> (UIView) in
             let container = UIView(frame: CGRect(x: 30, y: 20, width: frame.width - 60, height: frame.height - 60))
-            let label = UILabel(frame: container.bounds)
-            //label.text = element
-            //            label.textAlignment = .center
-            label.backgroundColor = UIColor.white
-            //            label.font = UIFont.systemFont(ofSize: 48, weight: UIFontWeightThin)
-            label.clipsToBounds = true
-            label.layer.cornerRadius = 16
-            container.addSubview(label)
-            
             container.layer.shadowRadius = 4
             container.layer.shadowOpacity = 1.0
             container.layer.shadowColor = UIColor(white: 0.9, alpha: 1.0).cgColor
             container.layer.shadowOffset = CGSize(width: 0, height: 0)
             container.layer.shouldRasterize = true
             container.layer.rasterizationScale = UIScreen.main.scale
+            
+            let label = UILabel(frame: container.bounds)
+            label.backgroundColor = UIColor.white
+            label.clipsToBounds = true
+            label.layer.cornerRadius = 16
+            container.addSubview(label)
+            
+            let titleLabel = UILabel()
+            titleLabel.text = "Thing Pink Challenge"
+            container.addSubview(titleLabel)
+            
+            let subTitleLabel = UILabel()
+            subTitleLabel.text = "Sub Title"
+            subTitleLabel.font = UIFont.systemFont(ofSize: 14)
+            container.addSubview(subTitleLabel)
+            
+            let imageView = UIImageView()
+            imageView.image = #imageLiteral(resourceName: "thingPink")
+            imageView.contentMode = .scaleAspectFill
+            imageView.clipsToBounds = true
+            imageView.layer.cornerRadius = 10
+            
+            container.addSubview(imageView)
+            container.addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: imageView)
+            container.addConstraintsWithFormat(format: "V:|-16-[v0]-16-[v1(31)][v2(31)]-16-|", views: imageView, titleLabel, subTitleLabel)
+            container.addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: titleLabel)
+            container.addConstraintsWithFormat(format: "H:|-16-[v0]-16-|", views: subTitleLabel)
             
             return container
         }
@@ -68,41 +123,49 @@ class ViewController: UIViewController, SwipeCardsViewDelegate {
     
     func setupOverlay() -> (SwipeMode, CGRect) -> (UIView) {
         let overlayGenerator: (SwipeMode, CGRect) -> (UIView) = { (mode: SwipeMode, frame: CGRect) -> (UIView) in
-            let label = UILabel()
-            label.frame.size = CGSize(width: 100, height: 100)
-            label.center = CGPoint(x: frame.width / 2, y: frame.height / 2)
-            label.layer.cornerRadius = label.frame.width / 2
+            var label = UILabel()
+            label.layer.cornerRadius = 10
             label.clipsToBounds = true
-            //            label.backgroundColor = mode == .left ? UIColor.red : UIColor.green
-            //            label.text = mode == .left ? "👎" : "👍"
+            label.font = UIFont.systemFont(ofSize: 14)
+            label.textAlignment = .center
             
             switch mode {
             case .left:
-                label.text = "👎"
-                label.backgroundColor = UIColor.red
+                label = self.setupRightLabel(label: label, frame: frame, title: "👎")
             case .right:
-                label.text = "👍"
-                label.backgroundColor = UIColor.green
+                label = self.setupLeftLabel(label: label, frame: frame, title: "👍")
             case .rightTop:
-                label.text = "Right Top"
-                label.backgroundColor = UIColor.green
+                label = self.setupLeftLabel(label: label, frame: frame, title: "Right Top")
             case .rightBottom:
-                label.text = "Right Bottom"
-                label.backgroundColor = UIColor.green
+                label = self.setupLeftLabel(label: label, frame: frame, title: "Right Bottom")
             case .leftTop:
-                label.text = "Left Top"
-                label.backgroundColor = UIColor.red
+                label = self.setupRightLabel(label: label, frame: frame, title: "Left Top")
             case .leftBottom:
-                label.text = "Left Bottom"
-                label.backgroundColor = UIColor.red
+                label = self.setupRightLabel(label: label, frame: frame, title: "Left Bottom")
             }
             
-            label.font = UIFont.systemFont(ofSize: 14)
-            label.textAlignment = .center
             return label
         }
         
         return overlayGenerator
+    }
+    
+    func setupRightLabel(label: UILabel, frame: CGRect, title: String) -> UILabel {
+        label.text = title
+        let labelWidth = CGFloat(100)
+        label.frame = CGRect(x: frame.width - labelWidth - 30, y: 20, width: labelWidth, height: 30)
+        label.backgroundColor = UIColor.red
+        
+        return label
+    }
+    
+    func setupLeftLabel(label: UILabel, frame: CGRect, title: String) -> UILabel {
+        label.text = title
+        label.backgroundColor = UIColor.green
+        label.frame = CGRect(x: 30, y: 20, width: 100, height: 30)
+        label.backgroundColor = UIColor.green
+        
+        return label
     }
     
     func setupSwipeView(viewGenerator: @escaping (String, CGRect) -> (UIView),
@@ -116,6 +179,24 @@ class ViewController: UIViewController, SwipeCardsViewDelegate {
         
         self.swipeView.addCards((self.count...(self.count+19)).map({"\($0)"}))
         self.count = self.count + 20
+    }
+    
+    func setupUI() {
+        self.view.addSubview(self.reactLabel)
+        self.view.addSubview(self.sadImageView)
+        self.view.addSubview(self.happyImageView)
+        self.view.addSubview(self.leftArrowImageView)
+        self.view.addSubview(self.rightArrowImageView)
+        
+        let xConstraint = NSLayoutConstraint(item: self.reactLabel, attribute: .centerX, relatedBy: .equal, toItem: self.view, attribute: .centerX, multiplier: 1, constant: 0)
+        NSLayoutConstraint.activate([xConstraint])
+        
+        self.view.addConstraintsWithFormat(format: "H:[v0]-16-[v1(22)]-16-[v2]-16-[v3(22)]-16-[v4]", views: self.leftArrowImageView, self.sadImageView, self.reactLabel, self.happyImageView, rightArrowImageView)
+        self.view.addConstraintsWithFormat(format: "V:[v0]-16-|", views: self.reactLabel)
+        self.view.addConstraintsWithFormat(format: "V:[v0(22)]-16-|", views: self.sadImageView)
+        self.view.addConstraintsWithFormat(format: "V:[v0(22)]-16-|", views: self.happyImageView)
+        self.view.addConstraintsWithFormat(format: "V:[v0(22)]-16-|", views: self.leftArrowImageView)
+        self.view.addConstraintsWithFormat(format: "V:[v0(22)]-16-|", views: self.rightArrowImageView)
     }
     
     func setupNavBarUI() {
@@ -183,25 +264,24 @@ class ViewController: UIViewController, SwipeCardsViewDelegate {
         self.heartBarButtonItem.customView = iconButton
     }
     
-    func animateUIBarButton(completion: @escaping () -> ()) {
-        self.heartBarButtonItem.customView!.transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi * 6/5))
-        
-        UIView.animate(withDuration: 0.3, animations: { 
-            self.heartBarButtonItem.customView!.transform = CGAffineTransform.identity
-        }) { (response) in
-            DispatchQueue.main.async {
-                completion()
-            }
-        }
-    }
-    
     //MARK: - SwipeCardsDelegate
     
+    func transformUIBarButton(_ xDistance: CGFloat, _ yDistance: CGFloat) {
+        self.heartBarButtonItem.customView!.transform = CGAffineTransform(scaleX: 2, y: 2)
+    }
+    
     func animateUIBarButton(_ xDistance: CGFloat, _ yDistance: CGFloat) {
+        // Rotation
+//        self.heartBarButtonItem.customView!.transform = CGAffineTransform(rotationAngle: CGFloat(Double.pi * 6/5))
+        // Scale
+        self.heartBarButtonItem.customView!.transform = CGAffineTransform(scaleX: 0, y: 0)
+        
         if -actionMargin + 20 > yDistance && xDistance > 0 {
-            animateUIBarButton(completion: { 
+            UIView.animate(withDuration: 0.3, animations: {
+                self.heartBarButtonItem.customView!.transform = CGAffineTransform.identity
+            }) { (response) in
                 self.changeUIBarButtonColor(color: .black)
-            })
+            }
         }
     }
     

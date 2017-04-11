@@ -15,6 +15,7 @@ protocol SwipeCardDelegate: class {
     func cardTapped(_ card: SwipeCard)
     func cardDragged(_ xDistance: CGFloat,_ yDistance: CGFloat)
     func animateUIBarButton(_ xDistance: CGFloat,_ yDistance: CGFloat)
+    func transformUIBarButton(_ xDistance: CGFloat,_ yDistance: CGFloat)
     func changeUIBarButtonColor(color: BarButtonColor)
 }
 
@@ -136,7 +137,10 @@ class SwipeCard: UIView {
         self.leftBottomOverlay?.alpha = 0.0
         
         var activeOverlay: UIView?
-        if xDistance > 0 && yDistance < -self.containersMargin {
+        if xDistance > 0 && yDistance < -self.containersMargin*2 {
+            activeOverlay = self.rightTopOverlay
+            self.delegate?.transformUIBarButton(xDistance, yDistance)
+        } else if xDistance > 0 && yDistance < -self.containersMargin {
             activeOverlay = self.rightTopOverlay
             self.delegate?.changeUIBarButtonColor(color: .red)
         } else if (xDistance > 0 && yDistance > self.containersMargin) {
