@@ -10,19 +10,19 @@ import UIKit
 import Foundation
 
 class ViewController: UIViewController, SwipeCardsViewDelegate {
+    
     // MARK: - Var
     
     private var swipeView: SwipeCardsView<String>!
     private var count = 0
     var emojiLauncher = EmojiLauncher()
     
-    var heartBarButtonItem = UIBarButtonItem()
+    // MARK: - UIComponents
     
     let reactLabel: UILabel = {
         let label = UILabel()
         label.text = "REACT"
         label.textAlignment = .center
-        label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
@@ -52,6 +52,26 @@ class ViewController: UIViewController, SwipeCardsViewDelegate {
         imageView.clipsToBounds = true
         imageView.image = #imageLiteral(resourceName: "rightArrow")
         return imageView
+    }()
+    
+    let burguerMenuBarButtonItem: UIBarButtonItem = {
+        let burguerMenuImage = #imageLiteral(resourceName: "burguerMenu").withRenderingMode(.alwaysOriginal)
+        let barButtonItem = UIBarButtonItem(image: burguerMenuImage,
+                                            style: .plain,
+                                            target: self,
+                                            action: nil)
+        return barButtonItem
+    }()
+    
+    let heartBarButtonItem: UIBarButtonItem = {
+        let barButtonItem = UIBarButtonItem()
+        let icon = #imageLiteral(resourceName: "heartMenu").withRenderingMode(.alwaysOriginal)
+        let iconSize = CGRect(origin: CGPoint.zero, size: icon.size)
+        let iconButton = UIButton(frame: iconSize)
+        iconButton.setBackgroundImage(icon, for: .normal)
+        barButtonItem.customView = iconButton
+        
+        return barButtonItem
     }()
     
     // MARK: - Life Cycle
@@ -216,17 +236,7 @@ class ViewController: UIViewController, SwipeCardsViewDelegate {
     }
     
     func setupNavBarButtons(){
-        let burguerMenuImage = #imageLiteral(resourceName: "burguerMenu").withRenderingMode(.alwaysOriginal)
-        let burguerMenuBarButtonItem = UIBarButtonItem(image: burguerMenuImage, style: .plain, target: self, action: nil)
-        
-        navigationItem.leftBarButtonItem = burguerMenuBarButtonItem
-        
-        let icon = #imageLiteral(resourceName: "heartMenu").withRenderingMode(.alwaysOriginal)
-        let iconSize = CGRect(origin: CGPoint.zero, size: icon.size)
-        let iconButton = UIButton(frame: iconSize)
-        iconButton.setBackgroundImage(icon, for: .normal)
-        
-        self.heartBarButtonItem.customView = iconButton
+        navigationItem.leftBarButtonItem = self.burguerMenuBarButtonItem
         navigationItem.rightBarButtonItem = self.heartBarButtonItem
         
         self.heartBarButtonItem.customView!.transform = CGAffineTransform(scaleX: 0, y: 0)
@@ -244,7 +254,7 @@ class ViewController: UIViewController, SwipeCardsViewDelegate {
         
     }
     
-    // MARK: IBAction
+    // MARK: - Class Logic
     
     func changeUIBarButtonColor(color: BarButtonColor) {
         
@@ -307,7 +317,6 @@ class ViewController: UIViewController, SwipeCardsViewDelegate {
     }
     
     func cardDragged(_ xDistance: CGFloat,_ yDistance: CGFloat) {
-        
         if xDistance > actionMargin {
             emojiLauncher.showRightEmojiView(yDistance: yDistance)
         } else if xDistance < -actionMargin {
@@ -315,9 +324,6 @@ class ViewController: UIViewController, SwipeCardsViewDelegate {
         } else {
             emojiLauncher.dismissEmojiViews()
         }
-        
-//        print("Card Dragged X: \(xDistance)")
-//        print("Card Dragged Y: \(yDistance)")
     }
 
 }

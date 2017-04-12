@@ -80,7 +80,6 @@ class EmojiLauncher: NSObject {
     
     // MARK: - Var
     
-//    private var originalLeftPoint = CGPoint.zero
     private var originalLeftPoint: CGFloat = 0.0
     private var originalRightPoint: CGFloat = 0.0
     private var containerWidth: CGFloat = 0.0
@@ -147,12 +146,6 @@ class EmojiLauncher: NSObject {
             if let window = UIApplication.shared.keyWindow {
                 window.addSubview(self.leftViewContainer)
 
-                
-//                self.leftViewContainer.frame = CGRect(x: -self.containerWidth,
-//                                                      y: ( window.frame.height / 2 ) - ( self.height / 2 ),
-//                                                      width: self.containerWidth,
-//                                                      height: self.height)
-                
                 UIView.animate(withDuration: 0.3, animations: { 
                     self.leftViewContainer.frame = CGRect(x: 0,
                                                           y: ( window.frame.height / 2 ) - ( self.height / 2 ),

@@ -2,11 +2,11 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "Sad_Face_Emoji.png",
       "scale" : "1x"
     },
     {
       "idiom" : "universal",
+      "filename" : "Sad_Face_Emoji.png",
       "scale" : "2x"
     },
     {
